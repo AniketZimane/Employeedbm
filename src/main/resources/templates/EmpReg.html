@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>EmployeeDBM</title>
+    <link rel="stylesheet" href="/assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Amarante&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Arima&amp;display=swap">
+    <link rel="stylesheet" href="/assets/fonts/fontawesome-all.min.css">
+    <script>
+        function filterTbl(input) {
+		  var input, filter, table, tr, td, cell, i, j;
+		  input = document.getElementById("searchfield");
+		  filter = input.value.toUpperCase();
+		  table = document.getElementById("tbl1");
+		  tr = table.getElementsByTagName("tr");
+		  for (i = 1; i < tr.length; i++) {
+		    // Hide the row initially.
+		    tr[i].style.display = "none";
+
+		    td = tr[i].getElementsByTagName("td");
+		    for (var j = 0; j < td.length; j++) {
+		      cell = tr[i].getElementsByTagName("td")[j];
+		      if (cell) {
+		        if (cell.innerHTML.toUpperCase().indexOf(filter) > -1) {
+		          tr[i].style.display = "";
+		          break;
+		        }
+		      }
+		    }
+		  }
+		}
+    </script>
+</head>
+
+<body style="background: var(--bs-gray-500);">
+<div th:replace="myFileFragment.html :: navFragment1"></div>
+    <h1 style="text-align: center;font-family: Arima, serif;margin-top: 50px;">RECORD OF EMPLOYEE<div class="btn-group" role="group"><button class="btn btn-primary border rounded" type="button" style="margin-left: 30px;" data-bs-target="#regmodel" data-bs-toggle="modal"><i class="fas fa-plus"></i></button></div>
+    </h1>
+    <div class="text-center"></div>
+    <div class="card" style="margin-top: 10px;margin-right: 20px;margin-left: 20px;height: none;max-height: 1000px;min-height: 300px;"><input class="border rounded-pill" type="search" id="searchfield" placeholder="search by keyword" onkeydown="filterTbl()" style="height: 70px;margin-top: 10px;margin-right: 100px;margin-left: 100px;padding-left:50px;">
+        <div style="margin-left: 30px;margin-right: 30px;font-size: 20px;">
+            <div class="table-responsive" id="tbl" style="margin-right: 20px;margin-top: 50px;">
+                <table class="table" id="tbl1">
+                    <thead style="background: var(--bs-blue);">
+                        <tr>
+                            <th>ID</th>
+                            <th>NAME</th>
+                            <th>DESIGNATION</th>
+                            <th>SALARY</th>
+                            <th>ACTION</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="emp :${listEmp}">
+                        <td th:text="${emp.id}"></td>
+                        <td th:text="${emp.name}"></td>
+                        <td th:text="${emp.designation}"></td>
+                        <td th:text="${emp.salary}"></td>
+                        <td>
+                                <div class="btn-group" role="group"><a class="btn btn-primary" role="button" style="margin-left: 10px;" th:href="@{/emps/delete/{empID}/(empID=${emp.id})}"><i class="far fa-trash-alt"></i></a></div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <nav>
+            <ul class="pagination">
+                <!-- Previous Button Code Started -->
+                <li class="page-item" th:classappend="${(curPage == 1)} ? 'disabled'">
+                    <a class="page-link"
+                       aria-label="Previous"
+                       th:href="@{/emp/reg/{curPage}/(curPage=${curPage-1})}">
+                        <span aria-hidden="true">«</span>
+                    </a>
+                </li>
+                <!-- Previous Button Code Ended -->
+
+                <!-- Pagination Button Loop Started -->
+                <li class="page-item"
+                    th:classappend="${(pageNo == curPage)} ? 'active'"
+                    th:each="pageNo : ${#numbers.sequence(1, totalPages)}">
+                    <a class="page-link"
+                       th:href="@{/emp/reg/{curPage}/(curPage=${pageNo})}"
+                       th:text="${pageNo}">
+                    </a>
+                </li>
+                <!-- Pagination Button Loop Ended -->
+
+                <!-- Next Button Code Started -->
+                <li class="page-item"
+                    th:classappend="${(curPage == totalPages)} ? 'disabled'">
+                    <a class="page-link"
+                       aria-label="Next"
+                       th:href="@{/emp/reg/{curPage}/(curPage=${curPage+1})}">
+                        <span aria-hidden="true">»</span>
+                    </a>
+                </li>
+                <!-- Next Button Code Ended -->
+
+            </ul>
+        </nav>
+    </div>
+    <div class="modal fade" role="dialog" tabindex="-1" id="regmodel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header" style="background: var(--bs-gray-600);">
+                    <h4 class="modal-title">Register</h4><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" style="background: var(--bs-gray-400);">
+                    <section class="py-4 py-xl-5">
+                        <div class="container">
+                            <div class="card mb-5">
+                                <div class="card-body p-sm-5" style="background: var(--bs-modal-bg);">
+                                    <h2 class="text-center mb-4">Register New Account</h2>
+                                    <form method="post" action="/emps/" th:object="${Employee}">
+                                        <div class="mb-3"><input class="form-control" type="text" id="name-2" name="name" placeholder="Name" required=""></div>
+                                        <div class="mb-3"><input class="form-control" type="text" id="name-3" name="designation" placeholder="Designation" required=""></div>
+                                        <div class="mb-3"><input class="form-control" type="text" id="name-1" name="salary" placeholder="Salary" required="" inputmode="numeric"></div>
+                                        <div><button class="btn btn-primary d-block w-100" type="submit">SUBMIT</button></div>
+                                        <div><button class="btn btn-secondary d-block w-100" type="reset" style="margin-top: 20px;">RESET</button></div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/assets/bootstrap/js/bootstrap.min.js"></script>
+</body>
+
+</html>
