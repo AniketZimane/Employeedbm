@@ -34,9 +34,8 @@
 		}
     </script>
 </head>
-
 <body style="background: var(--bs-gray-500);">
-<div th:replace="myFileFragment.html :: navFragment1"></div>
+<div th:replace="NavigationBar.html :: navbar"></div>
     <h1 style="text-align: center;font-family: Arima, serif;margin-top: 50px;">RECORD OF EMPLOYEE<div class="btn-group" role="group"><button class="btn btn-primary border rounded" type="button" style="margin-left: 30px;" data-bs-target="#regmodel" data-bs-toggle="modal"><i class="fas fa-plus"></i></button></div>
     </h1>
     <div class="text-center"></div>
@@ -50,6 +49,7 @@
                             <th>NAME</th>
                             <th>DESIGNATION</th>
                             <th>SALARY</th>
+                            <th>Image</th>
                             <th>ACTION</th>
                         </tr>
                     </thead>
@@ -59,6 +59,7 @@
                         <td th:text="${emp.name}"></td>
                         <td th:text="${emp.designation}"></td>
                         <td th:text="${emp.salary}"></td>
+                        <td class="text-center"> <img th:src="@{/assets/img/{fileName}/(fileName = ${emp.id + '.png'})}" height="80px" width="100px"> </td>
                         <td>
                                 <div class="btn-group" role="group"><a class="btn btn-primary" role="button" style="margin-left: 10px;" th:href="@{/emps/delete/{empID}/(empID=${emp.id})}"><i class="far fa-trash-alt"></i></a></div>
                             </td>
@@ -116,10 +117,11 @@
                             <div class="card mb-5">
                                 <div class="card-body p-sm-5" style="background: var(--bs-modal-bg);">
                                     <h2 class="text-center mb-4">Register New Account</h2>
-                                    <form method="post" action="/emps/" th:object="${Employee}">
+                                    <form method="post" action="/emps/" th:object="${Employee}" enctype="multipart/form-data">
                                         <div class="mb-3"><input class="form-control" type="text" id="name-2" name="name" placeholder="Name" required=""></div>
                                         <div class="mb-3"><input class="form-control" type="text" id="name-3" name="designation" placeholder="Designation" required=""></div>
                                         <div class="mb-3"><input class="form-control" type="text" id="name-1" name="salary" placeholder="Salary" required="" inputmode="numeric"></div>
+                                        <div class="mb-3"><input class="form-control" type="file" name="file" required="" accept="image/png"></div>
                                         <div><button class="btn btn-primary d-block w-100" type="submit">SUBMIT</button></div>
                                         <div><button class="btn btn-secondary d-block w-100" type="reset" style="margin-top: 20px;">RESET</button></div>
                                     </form>
@@ -132,6 +134,7 @@
         </div>
     </div>
     <script src="/assets/bootstrap/js/bootstrap.min.js"></script>
+<div th:replace="NavigationBar.html :: bottom_footer"></div>
 </body>
 
 </html>
