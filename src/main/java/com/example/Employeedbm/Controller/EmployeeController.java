@@ -2,6 +2,7 @@ package com.example.Employeedbm.Controller;
 
 import com.example.Employeedbm.Dao.EmpRepo;
 import com.example.Employeedbm.Entity.Employee;
+import com.example.Employeedbm.helper.FileUploader;
 import org.apache.catalina.util.ErrorPageSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -13,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -20,6 +22,8 @@ import java.util.List;
 public class EmployeeController {
     @Autowired
     EmpRepo emprepo;
+    @Autowired
+    FileUploader uploader;
     @GetMapping("/")
     public String RegisterEmp()
     {
@@ -41,10 +45,19 @@ public class EmployeeController {
         return "EmpReg";
     }
     @PostMapping("/emps/")//after saving data
-    public String SubmitData(Model model,Employee emp)
+    public String SubmitData(Model model, Employee emp, MultipartFile file)
     {
         int curPage=1;
-        emprepo.save(emp);
+        String fileNameOld = file.getOriginalFilename();
+        String extension = fileNameOld.substring(fileNameOld.indexOf(".") + 1);
+        emp.setExt(extension);
+        Employee empNew = emprepo.save(emp);
+
+
+        String fileNameNew = empNew.getId() + "." + extension;
+
+//        System.out.println("Image New Name is " + fileNameNew);
+        uploader.uploadFile(file, fileNameNew);
         Pageable pageable = PageRequest.of(curPage-1, maxSize, Sort.by("id").descending());
         Page<Employee> page = emprepo.findAll(pageable);
         int totalPages = page.getTotalPages();
@@ -88,6 +101,10 @@ public class EmployeeController {
         model.addAttribute("curPage", curPage);
         return "empReg";
     }
-
+    @GetMapping("/login/")
+    public String loginPage(Model model)
+    {
+        return "login";
+    }
 
 }
