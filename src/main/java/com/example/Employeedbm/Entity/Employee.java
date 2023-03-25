@@ -1,6 +1,9 @@
 package com.example.Employeedbm.Entity;
 
 import jakarta.persistence.*;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.util.Date;
 
 
 @Entity
@@ -11,15 +14,36 @@ public class Employee {
     Long id;
     String name;
     String designation;
+    String ext;
     double salary;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    Date date;
 
     public Employee() {
     }
 
-    public Employee(String name, String designation, double salary) {
+    public String getExt() {
+        return ext;
+    }
+
+    public void setExt(String ext) {
+        this.ext = ext;
+    }
+
+    public Employee(String name, String designation, double salary, String ext,Date date) {
         this.name = name;
         this.designation = designation;
         this.salary = salary;
+        this.ext=ext;
+        this.date=date;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 
     public Long getId() {
@@ -60,7 +84,9 @@ public class Employee {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", designation='" + designation + '\'' +
+                ", ext='" + ext + '\'' +
                 ", salary=" + salary +
+                ", date=" + date +
                 '}';
     }
 }
